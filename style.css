@@ -116,6 +116,31 @@ button {
   gap: .8rem;
 }
 
+.pet-row {
+  display: grid;
+  gap: .75rem;
+}
+
+#petSelect {
+  border-radius: 10px;
+  border: 1px solid #ffffff30;
+  background: var(--panel-soft);
+  color: var(--text);
+  padding: .65rem .8rem;
+  font-size: .95rem;
+}
+
+.pet-stats {
+  display: flex;
+  gap: .9rem;
+  flex-wrap: wrap;
+  color: #dbe0ff;
+}
+
+.pet-stats strong {
+  color: var(--accent);
+}
+
 .log ul {
   margin: .5rem 0 0;
   padding-left: 1.2rem;

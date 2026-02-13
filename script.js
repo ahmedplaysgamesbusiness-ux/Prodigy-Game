@@ -1,3 +1,18 @@
+const pets = {
+  dragon: {
+    name: "🐉 Ember Dragon",
+    perk: "Bonus score on streak answers",
+  },
+  fox: {
+    name: "🦊 Logic Fox",
+    perk: "Regain a life every 5 correct answers",
+  },
+  owl: {
+    name: "🦉 Sage Owl",
+    perk: "Shows extra hint guidance",
+  },
+};
+
 const state = {
   score: 0,
   streak: 0,
@@ -6,6 +21,9 @@ const state = {
   total: 0,
   difficulty: 1,
   current: null,
+  pet: "dragon",
+  petXp: 0,
+  petLevel: 1,
 };
 
 const el = {
@@ -23,6 +41,10 @@ const el = {
   restart: document.getElementById("restartBtn"),
   overPanel: document.getElementById("gameOverPanel"),
   finalSummary: document.getElementById("finalSummary"),
+  petSelect: document.getElementById("petSelect"),
+  petName: document.getElementById("petName"),
+  petLevel: document.getElementById("petLevel"),
+  petXp: document.getElementById("petXp"),
 };
 
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -30,6 +52,13 @@ const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 function selectedModes() {
   const checked = [...document.querySelectorAll("#modePanel input:checked")].map((x) => x.value);
   return checked.length ? checked : ["add"];
+}
+
+function petHintTail() {
+  if (state.pet === "owl") {
+    return " | Owl tip: estimate first, then compute exactly.";
+  }
+  return "";
 }
 
 function makeQuestion() {
@@ -69,7 +98,7 @@ function makeQuestion() {
 
   state.current = { answer, text, hint };
   el.questionText.textContent = text;
-  el.questionHint.textContent = hint;
+  el.questionHint.textContent = `${hint}${petHintTail()}`;
   el.input.value = "";
   el.input.focus();
 }
@@ -81,6 +110,9 @@ function updateHud() {
   el.difficulty.textContent = state.difficulty;
   const accuracy = state.total ? Math.round((state.correct / state.total) * 100) : 0;
   el.accuracy.textContent = `${accuracy}%`;
+  el.petName.textContent = pets[state.pet].name;
+  el.petLevel.textContent = state.petLevel;
+  el.petXp.textContent = state.petXp;
 }
 
 function addHistory(msg) {
@@ -100,6 +132,28 @@ function adaptDifficulty(isCorrect) {
   }
 }
 
+function addPetXp() {
+  state.petXp += 1;
+  if (state.petXp >= 5) {
+    state.petXp = 0;
+    state.petLevel += 1;
+    addHistory(`⭐ ${pets[state.pet].name} reached level ${state.petLevel}!`);
+  }
+}
+
+function applyPetPerks(isCorrect) {
+  if (!isCorrect) return;
+
+  if (state.pet === "dragon" && state.streak >= 2) {
+    state.score += 2;
+  }
+
+  if (state.pet === "fox" && state.correct > 0 && state.correct % 5 === 0 && state.lives < 5) {
+    state.lives += 1;
+    addHistory("🧡 Logic Fox restored 1 life!");
+  }
+}
+
 function checkAnswer(rawInput) {
   const guess = Number(rawInput);
   const correct = Number(state.current.answer);
@@ -112,6 +166,8 @@ function checkAnswer(rawInput) {
     state.streak += 1;
     const bonus = 10 + state.difficulty * 2 + state.streak;
     state.score += bonus;
+    addPetXp();
+    applyPetPerks(true);
     el.feedback.textContent = `Correct! +${bonus} points.`;
     el.feedback.className = "feedback good";
     addHistory(`✅ ${state.current.text} → ${correct}`);
@@ -137,7 +193,7 @@ function endGame() {
   el.overPanel.classList.remove("hidden");
   el.form.classList.add("hidden");
   const accuracy = state.total ? Math.round((state.correct / state.total) * 100) : 0;
-  el.finalSummary.textContent = `Final score: ${state.score} | Accuracy: ${accuracy}% | Peak difficulty: ${state.difficulty}`;
+  el.finalSummary.textContent = `Final score: ${state.score} | Accuracy: ${accuracy}% | Peak difficulty: ${state.difficulty} | Pet level: ${state.petLevel}`;
 }
 
 function restartGame() {
@@ -149,6 +205,8 @@ function restartGame() {
     total: 0,
     difficulty: 1,
     current: null,
+    petXp: 0,
+    petLevel: 1,
   });
 
   el.history.innerHTML = "";
@@ -172,6 +230,13 @@ document.querySelectorAll("#modePanel input").forEach((checkbox) => {
     addHistory("🔧 Topic settings updated.");
     makeQuestion();
   });
+});
+
+el.petSelect.addEventListener("change", (event) => {
+  state.pet = event.target.value;
+  addHistory(`🐾 Companion set to ${pets[state.pet].name}.`);
+  updateHud();
+  makeQuestion();
 });
 
 updateHud();
