@@ -1,0 +1,12 @@
+{
+  "name": "arcane-math-quest",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A browser-based adaptive math adventure game with pet companions.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "serve": "node server.mjs",
+    "check": "node --check script.js && node --check server.mjs"
+  }
+}
