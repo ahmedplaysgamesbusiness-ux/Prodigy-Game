@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcane Math Quest</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="stars"></div>
+  <main class="game-shell">
+    <header class="top-bar">
+      <div>
+        <h1>Arcane Math Quest</h1>
+        <p class="subtitle">An adaptive AI-like math adventure</p>
+      </div>
+      <div class="level-pill">Difficulty: <span id="difficultyLabel">1</span></div>
+    </header>
+
+    <section class="hud">
+      <div class="card stat"><span>⚡ Streak</span><strong id="streak">0</strong></div>
+      <div class="card stat"><span>🏆 Score</span><strong id="score">0</strong></div>
+      <div class="card stat"><span>❤️ Lives</span><strong id="lives">3</strong></div>
+      <div class="card stat"><span>🎯 Accuracy</span><strong id="accuracy">0%</strong></div>
+    </section>
+
+    <section class="card question-area">
+      <p class="question-tag">AI Question Forge</p>
+      <h2 id="questionText">Loading question...</h2>
+      <p id="questionHint" class="hint"></p>
+      <form id="answerForm" autocomplete="off">
+        <input id="answerInput" type="number" step="any" placeholder="Type your answer" required />
+        <button type="submit">Cast Answer</button>
+      </form>
+      <p id="feedback" class="feedback"></p>
+    </section>
+
+    <section class="card choices" id="modePanel">
+      <h3>Learning Mode</h3>
+      <div class="toggle-row">
+        <label><input type="checkbox" value="add" checked /> Addition</label>
+        <label><input type="checkbox" value="sub" checked /> Subtraction</label>
+        <label><input type="checkbox" value="mul" checked /> Multiplication</label>
+        <label><input type="checkbox" value="div" checked /> Division</label>
+      </div>
+    </section>
+
+    <section class="card pet-panel">
+      <h3>Pet Companion</h3>
+      <div class="pet-row">
+        <select id="petSelect" aria-label="Choose pet companion">
+          <option value="dragon">🐉 Ember Dragon (+1 score streak bonus)</option>
+          <option value="fox">🦊 Logic Fox (+1 life every 5 correct)</option>
+          <option value="owl">🦉 Sage Owl (extra hints shown)</option>
+        </select>
+        <div class="pet-stats">
+          <span id="petName">🐉 Ember Dragon</span>
+          <span>Level <strong id="petLevel">1</strong></span>
+          <span>XP <strong id="petXp">0</strong>/5</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card log">
+      <h3>Quest Log</h3>
+      <ul id="historyList"></ul>
+    </section>
+
+    <section class="card over hidden" id="gameOverPanel">
+      <h2>Game Over</h2>
+      <p id="finalSummary"></p>
+      <button id="restartBtn">Play Again</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
